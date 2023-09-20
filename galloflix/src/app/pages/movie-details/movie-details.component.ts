@@ -11,24 +11,35 @@ import { MovieApiService } from 'src/app/services/movie-api.service';
 export class MovieDetailsComponent {
 
   constructor(private service: MovieApiService, private router: ActivatedRoute) { }
-  
+
   movieResult: any;
-  movieVideoResult: any; 
+  movieVideoResult: any;
   movieCastResult: any;
 
   ngOnInit(): void {
     let id = this.router.snapshot.paramMap.get('id'); this.getMovie(id);
     this.getMovie(id);
-    this.getVideo(id); 
+    this.getVideo(id);
     this.getCast(id);
-    
-    
+
+
   }
-  getVideo(id: string | null) {
-    throw new Error('Method not implemented.');
+  getVideo(id: any) {
+    this.service.movieVideo(id).subscribe((result) => {
+      result.results.forEach((elem: any) => {
+        if (elem.type == "Trailer") {
+          this.movieVideoResult = "https://www.youtube.com/embed/" + elem.key;
+        }
+      });
+      console.log(this.movieVideoResult, 'movieVideo#');
+    });
   }
-  getCast(id: string | null) {
-    throw new Error('Method not implemented.');
+
+  getCast(id: any) {
+    this.service.movieCast(id).subscribe((result) => {
+      this.movieCastResult = result.cast; 
+      console.log(this.movieCastResult, 'movieVideo#');
+    });
   }
 
   getMovie(id: any) {
@@ -36,7 +47,7 @@ export class MovieDetailsComponent {
       //console.log(result, 'movieDetails#'); 
       this.movieResult = result;
     });
-    
+
   }
 }
 
